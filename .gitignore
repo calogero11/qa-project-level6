@@ -55,3 +55,5 @@ nunit-*.xml
 
 # Custom
 .idea/
+*.DotSettings.user
+*.DotSettings
