@@ -6,6 +6,25 @@ using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        if (builder.Environment.IsDevelopment())
+        {
+            policy.AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        }
+        else
+        {
+            policy.WithOrigins(builder.Configuration["AllowedFrontendUrl"] ?? throw new InvalidOperationException("Configuration error: 'AllowedFrontendUrl' is missing or empty in appsettings.json."))
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        }
+    });
+});
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
@@ -30,6 +49,8 @@ builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddEntityFrameworkStores<DatabaseContext>();
 
 var app = builder.Build();
+
+app.UseCors("AllowFrontend");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
