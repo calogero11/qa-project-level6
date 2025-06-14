@@ -27,10 +27,9 @@ public class IdentityService: IIdentityService
         {
             UserGuid = await GetUserGuid(),
             Email = await GetUserEmail(),
-            Roles = []
+            Roles = await GetUserRoles()
         };
     
-
     public async Task<Guid> GetUserGuid()
     {
         var userGuidString = await userManager.GetUserIdAsync(user);
@@ -65,5 +64,12 @@ public class IdentityService: IIdentityService
         }
 
         return email;
+    }
+
+    private async Task<List<string>> GetUserRoles()
+    {
+        var roles = await userManager.GetRolesAsync(user);
+        
+        return roles.ToList();
     }
 }

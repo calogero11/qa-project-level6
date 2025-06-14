@@ -3,28 +3,12 @@ using webapi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using webapi.Exceptions;
 using webapi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend", policy =>
-    {
-        if (builder.Environment.IsDevelopment())
-        {
-            policy.AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        }
-        else
-        {
-            policy.WithOrigins(builder.Configuration["AllowedFrontendUrl"] ?? throw new InvalidOperationException("Configuration error: 'AllowedFrontendUrl' is missing or empty in appsettings.json."))
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        }
-    });
-});
+builder.ConfigureCors();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -42,15 +26,13 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
+var defaultConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                              ?? throw new ConfigurationException("DefaultConnection");
+
 builder.Services.AddDbContext<DatabaseContext>(options => 
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(defaultConnectionString));
 
-
-builder.Services.AddAuthorization();
-builder.Services
-    .AddIdentityApiEndpoints<IdentityUser>()
-    .AddEntityFrameworkStores<DatabaseContext>()
-    .AddDefaultTokenProviders();
+builder.Services.AddAuth();
 
 builder.Services.AddHttpContextAccessor();
 

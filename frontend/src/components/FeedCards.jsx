@@ -1,12 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Toast from "./Toast.jsx";
 import {title} from "framer-motion/m";
 
 function FeedCards({feeds, updateFeeds}) {
     const [userGuid] = useState(sessionStorage.getItem("userGuid"));
+    const [userRoles, setUserRoles] = useState([]);
     const [editDetails, setEditDetails] = useState({id: null, title: null, content: null});
     const [toasterDetails, setToasterDetails] = useState({ isError: false, statusMessage: '', showToast: false});
 
+    useEffect(() => {
+        let roles = sessionStorage.getItem("roles")
+        if (roles === null || roles === undefined) {
+            return
+        }
+
+        if(roles.includes(",")) {
+            setUserRoles(roles.split(","))
+        }
+
+        return setUserRoles(roles);
+    }, []);
+    
     const handleEdit = async () => {
         try {
             let token = sessionStorage.getItem("token");
@@ -112,7 +126,7 @@ function FeedCards({feeds, updateFeeds}) {
                                 }
                             </div>
 
-                            { userGuid === feed.userGuid &&
+                            { (userGuid === feed.userGuid || userRoles.includes("Admin")) &&
                                 <div className="dropdown ms-3">
                                     <button className="btn text-dark fs-4" type="button" id="dropdownMenuButton"
                                             data-bs-toggle="dropdown" aria-expanded="false">
