@@ -10,12 +10,15 @@ body {
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.text-hover-grey:hover {
+  color: grey !important;
 }
 
 a {
@@ -35,6 +38,16 @@ h1 {
 .description {
   font-size: small;
   color: #292929;
+}
+
+.no-border {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 button {

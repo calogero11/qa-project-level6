@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {useNavigate, Link} from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { motion } from 'framer-motion';
 
 function Login() {
@@ -26,9 +26,15 @@ function Login() {
             }
             
             const data = await response.json();
+            const millisecondsMultiplier = 1000;
+            const tokenExpiration = new Date(new Date().getTime() + (data.expiresIn * millisecondsMultiplier));
+            
             sessionStorage.setItem('token', data.accessToken);
+            sessionStorage.setItem('tokenExpiration', tokenExpiration);
+            sessionStorage.setItem('refreshToken', data.refreshToken);
             
             const goToIndex = () => {
+                let username = email
                 navigate('/');    
             };
 
@@ -46,68 +52,66 @@ function Login() {
              exit={{ opacity: 0, transition: { duration: 0.5, ease: 'easeInOut' } }}
         >
             <div className="container-fluid 100vw vh-100">
-            <div className="h-100 row">
-                <div className="col-12 col-lg-6 position-relative">
-
-                    <div className="d-flex position-absolute top-0 end-0 p-3 me-4">
-                        <p>Don't have an account?</p>
-                        <Link to="/register" className="ms-2">Create account</Link>
-                    </div>
-
-                    <div className="d-flex justify-content-center align-items-center h-100">
-
-                        <div className="h-75 w-50 position-relative">
-                            <h3 className="mb-5">Login</h3>
-                            
-                            <form onSubmit={handleLogin}>
-                                <div className="mb-3">
-                                    <label htmlFor="email" className="form-label">Email address</label>
-                                    <input
-                                        id="email"
-                                        type="email"
-                                        required
-                                        className='form-control'
-                                        onChange=''
-                                        placeholder="Enter email"/>
-                                </div>
-
-                                <div className="mb-3">
-                                    <label htmlFor="password" className="form-label">Password</label>
-                                    <input
-                                        type="password"
-                                        required
-                                        className='form-control'
-                                        id="password"
-                                        onChange=''
-                                        placeholder="Password"/>
-                                </div>
-
-                                <button type="submit" className='btn btn-primary w-100 btn-dark position-absolute bottom-0 mb-5'>
-                                    Login
-                                </button>
-                            </form>
-
-                            {error && (
-                                <div className="alert alert-danger alert-dismissible fade show text-center" role="alert">
-                                    {error}
-                                    <button
-                                        type="button"
-                                        className="btn-close"
-                                        aria-label="Close"
-                                        onClick={() => setError('')}
-                                    ></button>
-                                </div>
-                            )}
-                            
+                <div className="h-100 row">
+                    <div className="col-12 col-lg-6 position-relative">
+                
+                        <div className="d-flex position-absolute top-0 end-0 p-3 me-4">
+                            <p>Don't have an account?</p>
+                            <Link to="/register" className="ms-2">Create account</Link>
                         </div>
-
+                
+                        <div className="d-flex justify-content-center align-items-center h-100">
+                
+                            <div className="h-75 w-50 position-relative">
+                                <h3 className="mb-5">Login</h3>
+                                
+                                <form onSubmit={handleLogin}>
+                                    <div className="mb-3">
+                                        <label htmlFor="email" className="form-label">Email address</label>
+                                        <input
+                                            id="email"
+                                            type="email"
+                                            required
+                                            className='form-control'
+                                            placeholder="Enter email"/>
+                                    </div>
+                
+                                    <div className="mb-3">
+                                        <label htmlFor="password" className="form-label">Password</label>
+                                        <input
+                                            type="password"
+                                            required
+                                            className='form-control'
+                                            id="password"
+                                            placeholder="Password"/>
+                                    </div>
+                
+                                    <button type="submit" className='btn btn-primary w-100 btn-dark position-absolute bottom-0 mb-5'>
+                                        Login
+                                    </button>
+                                </form>
+                
+                                {error && (
+                                    <div className="alert alert-danger alert-dismissible fade show text-center" role="alert">
+                                        {error}
+                                        <button
+                                            type="button"
+                                            className="btn-close"
+                                            aria-label="Close"
+                                            onClick={() => setError('')}
+                                        ></button>
+                                    </div>
+                                )}
+                                
+                            </div>
+                
+                        </div>
+                    </div>
+                
+                    <div className="bg-black col-lg-6 d-none d-lg-flex align-items-center justify-content-center">
+                        <h2 className="text-white">Welcome Back!</h2>
                     </div>
                 </div>
-
-                <div className="bg-black col-lg-6 d-none d-lg-flex align-items-center justify-content-center">
-                    <h2 className="text-white">Welcome Back!</h2>
-                </div>
-            </div>
             </div>
         </motion.div>
     );

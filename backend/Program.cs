@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Identity;
-using webapi.Entities;
+using webapi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using webapi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,9 +45,16 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContext<DatabaseContext>(options => 
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddAuthentication();
-builder.Services.AddIdentityApiEndpoints<IdentityUser>()
-    .AddEntityFrameworkStores<DatabaseContext>();
+
+builder.Services.AddAuthorization();
+builder.Services
+    .AddIdentityApiEndpoints<IdentityUser>()
+    .AddEntityFrameworkStores<DatabaseContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddServices();
 
 var app = builder.Build();
 
@@ -70,5 +78,8 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
     db.Database.Migrate();
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();
