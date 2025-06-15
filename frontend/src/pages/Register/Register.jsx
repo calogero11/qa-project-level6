@@ -57,7 +57,7 @@ function Register() {
         let password = event.target.password.value;
 
         try {
-            const response = await fetch('https://localhost:44324/register', {
+            const response = await fetch(`${__API_URL__}/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

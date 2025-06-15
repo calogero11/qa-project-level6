@@ -14,7 +14,7 @@ function Home() {
     const fetchFeeds = async () => {
         const token = sessionStorage.getItem("token");
 
-        const response = await fetch("https://localhost:44324/feed/", {
+        const response = await fetch(`${__API_URL__}/feed/`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

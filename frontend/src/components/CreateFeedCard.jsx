@@ -13,7 +13,7 @@ function CreateFeedCard({onCreated}) {
         const token = sessionStorage.getItem("token");
         
         try {
-            const response = await fetch("https://localhost:44324/feed", {
+            const response = await fetch(`${__API_URL__}/feed`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -67,7 +67,7 @@ function CreateFeedCard({onCreated}) {
                                 <input
                                     className="form-control mb-2 border-0"
                                     id="feedTitle"
-                                    placeholder="Want to give your post a title?"/>
+                                    placeholder="Want to give your post a title? (Optional)"/>
                             )
                         }
 
@@ -75,6 +75,7 @@ function CreateFeedCard({onCreated}) {
                             className="form-control border-0"
                             id="feedContent"
                             rows={rows}
+                            required={true}
                             placeholder="Share thoughts, ideas, or updates"
                             onChange={handleChange}/>
                         

@@ -13,7 +13,7 @@ function Login() {
         let password = event.target.password.value;
         
         try {
-            const response = await fetch('https://localhost:44324/login', { 
+            const response = await fetch(`${__API_URL__}/login`, { 
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',

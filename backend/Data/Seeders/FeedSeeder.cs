@@ -11,7 +11,7 @@ public static class FeedSeeder
 
         foreach (var user in users)
         {
-            if (databaseContext.Feeds.ToList().FirstOrDefault(feed => feed.UserGuid != Guid.Parse(user.Id)) is not null)
+            if (databaseContext.Feeds.ToList().FirstOrDefault(feed => feed.UserGuid == Guid.Parse(user.Id)) is not null)
             {
                 continue;
             }
@@ -29,7 +29,7 @@ public static class FeedSeeder
                     Content = $"Content {accountIdentifier}",
                     UserName = user.UserName,
                     UserGuid = Guid.Parse(user.Id),
-                    UploadedDate = DateTime.UtcNow
+                    UploadedDate = DateTime.Now
                 });
         }
 

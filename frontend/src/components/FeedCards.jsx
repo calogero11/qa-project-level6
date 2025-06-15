@@ -28,7 +28,7 @@ function FeedCards({feeds, updateFeeds}) {
             let title = editDetails.title;
             let content = editDetails.content;
             
-            const response = await fetch(`https://localhost:44324/feed/${id}`, {
+            const response = await fetch(`${__API_URL__}/feed/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ function FeedCards({feeds, updateFeeds}) {
         try {
             let token = sessionStorage.getItem("token");
             
-            const response = await fetch(`https://localhost:44324/feed/${id}`, {
+            const response = await fetch(`${__API_URL__}/feed/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -121,7 +121,7 @@ function FeedCards({feeds, updateFeeds}) {
                                 <small className="text-muted d-block">{feed.userName}</small>
                                 {
                                     feed.lastUpdatedDate != null ?
-                                        <small className="text-muted me-2">Updated: {getTimePassed(feed.uploadedDate)}</small> :
+                                        <small className="text-muted me-2">Updated: {getTimePassed(feed.lastUpdatedDate)}</small> :
                                         <small className="text-muted me-2">{getTimePassed(feed.uploadedDate)}</small>
                                 }
                             </div>

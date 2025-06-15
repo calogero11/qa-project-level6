@@ -14,7 +14,7 @@ function ProtectedRoute({ children }) {
       }
 
       try {
-        const response = await fetch("https://localhost:44324/auth/check", {
+        const response = await fetch(`${__API_URL__}/auth/check`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
