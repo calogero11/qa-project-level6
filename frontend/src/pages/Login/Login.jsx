@@ -13,7 +13,7 @@ function Login() {
         let password = event.target.password.value;
         
         try {
-            const response = await fetch(`${__API_URL__}/login`, { 
+            const response = await fetch(`${__API_URL__}/auth/login`, { 
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -21,17 +21,14 @@ function Login() {
                 body: JSON.stringify({ email, password })
             });
             
-            if (!response.ok) {
-                throw new Error('Incorrect username or password.');
+            if (response.status === 401) {
+                setError('Incorrect username or password.');
+                return
             }
             
             const data = await response.json();
-            const millisecondsMultiplier = 1000;
-            const tokenExpiration = new Date(new Date().getTime() + (data.expiresIn * millisecondsMultiplier));
             
             sessionStorage.setItem('token', data.accessToken);
-            sessionStorage.setItem('tokenExpiration', tokenExpiration);
-            sessionStorage.setItem('refreshToken', data.refreshToken);
             
             const goToIndex = () => {
                 let username = email
@@ -41,7 +38,7 @@ function Login() {
             goToIndex();
         }
         catch (error) {
-            setError(error.message || 'Login failed')
+            setError('An error has occured.')
         }
     }
     
@@ -81,6 +78,7 @@ function Login() {
                                         <input
                                             type="password"
                                             required
+                                            minLength={6}
                                             className='form-control'
                                             id="password"
                                             placeholder="Password"/>

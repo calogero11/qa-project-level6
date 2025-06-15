@@ -34,7 +34,7 @@ var defaultConnectionString = builder.Configuration.GetConnectionString("Default
 builder.Services.AddDbContext<DatabaseContext>(options => 
     options.UseSqlite(defaultConnectionString));
 
-builder.Services.AddAuth();
+builder.AddAuth();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -53,6 +53,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapIdentityApi<IdentityUser>();
+app.DisableIdentityLoginEndpoint();
 app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
@@ -66,9 +70,5 @@ using (var scope = app.Services.CreateScope())
     await IdentitySeeder.SeedUsersAsync(services);
     await FeedSeeder.SeedFeedsAsync(dbContext);
 }
-
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapIdentityApi<IdentityUser>();
 
 app.Run();
