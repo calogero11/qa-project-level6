@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using webapi.Data;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,11 @@ using webapi.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.ConfigureCors();
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -53,6 +59,11 @@ if (app.Environment.IsDevelopment())
 app.MapIdentityApi<IdentityUser>();
 
 app.UseHttpsRedirection();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.MapControllers();
 
