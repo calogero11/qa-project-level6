@@ -10,13 +10,14 @@ public class Feed
     [Required]
     public Guid UserGuid { get; set; }
     
-    [Required]
-    public string UserName { get; set; }
+    [Required, MaxLength(255)]
+    public string? UserName { get; set; }
     
-    public string Title { get; set; }
+    [MaxLength(255)]
+    public string? Title { get; set; }
 
-    [Required]
-    public string Content { get; set; }
+    [Required, MaxLength(255)]
+    public string? Content { get; set; }
 
     [Required]
     public DateTime UploadedDate { get; set; }

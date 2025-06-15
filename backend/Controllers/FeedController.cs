@@ -23,9 +23,9 @@ public class FeedController: ControllerBase
             return BadRequest(ModelState);
         }
         
-        await feedService.CreateFeedAsync(feedRequest.Content, feedRequest.Title);
+        await feedService.CreateFeedAsync(feedRequest.Content!, feedRequest.Title);
         
-        return CreatedAtAction(nameof(Get), new { id = feedRequest.Content}, null);
+        return CreatedAtAction(nameof(Get), new { id = feedRequest.Content }, null);
     }
     
     [Authorize, HttpGet, Route("{id}")]
@@ -51,7 +51,12 @@ public class FeedController: ControllerBase
     [Authorize, HttpPut, Route("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] FeedRequest feedRequest)
     {
-        var updated = await feedService.UpdateFeedAsync(id, feedRequest.Title, feedRequest.Content);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        
+        var updated = await feedService.UpdateFeedAsync(id, feedRequest.Content!, feedRequest.Title);
         if (!updated)
         {
             return NotFound();

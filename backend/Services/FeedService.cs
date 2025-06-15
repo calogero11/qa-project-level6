@@ -24,8 +24,8 @@ public class FeedService: IFeedService
         {
             Title = title,
             Content = content,
-            UserGuid = await identityService.GetUserGuid(),
-            UserName = await identityService.GetUserName(),
+            UserGuid = await identityService.GetUserGuidAsync(),
+            UserName = await identityService.GetUserNameAsync(),
             UploadedDate = DateTime.Now,
             LastUpdatedDate = null
         };
@@ -46,7 +46,7 @@ public class FeedService: IFeedService
         return await databaseContext.Feeds.FindAsync(id);
     }
 
-    public async Task<bool> UpdateFeedAsync(int id, string title, string content)
+    public async Task<bool> UpdateFeedAsync(int id, string content, string? title)
     {
         var feed = await GetFeedByIdAsync(id);
 
@@ -54,7 +54,7 @@ public class FeedService: IFeedService
         {
             return false;
         }
-
+        
         feed.Title = title;
         feed.Content = content;
         feed.LastUpdatedDate = DateTime.Now;

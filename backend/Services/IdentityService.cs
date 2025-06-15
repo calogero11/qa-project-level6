@@ -9,15 +9,11 @@ public class IdentityService: IIdentityService
 {
     private readonly ClaimsPrincipal claimsPrincipal;
     private readonly UserManager<IdentityUser> userManager;
-    private readonly IdentityUser user;
-
+   
     public IdentityService(IHttpContextAccessor httpContextAccessor, UserManager<IdentityUser> userManager)
     {
-        claimsPrincipal = httpContextAccessor.HttpContext?.User ??
+         claimsPrincipal = httpContextAccessor.HttpContext?.User ??
                           throw new UnauthorizedAccessException();
-
-        user = userManager.GetUserAsync(claimsPrincipal).Result 
-            ?? throw new UnauthorizedAccessException();
 
         this.userManager = userManager;
     }
@@ -25,16 +21,16 @@ public class IdentityService: IIdentityService
     public async Task<AuthInfo> GetAuthInfoAsync() =>
         new()
         {
-            UserGuid = await GetUserGuid(),
-            Email = await GetUserEmail(),
-            Roles = await GetUserRoles()
+            UserGuid = await GetUserGuidAsync(),
+            Email = await GetUserEmailAsync(),
+            Roles = await GetUserRolesAsync()
         };
     
-    public async Task<Guid> GetUserGuid()
+    public async Task<Guid> GetUserGuidAsync()
     {
-        var userGuidString = await userManager.GetUserIdAsync(user);
+        var user =  await userManager.GetUserAsync(claimsPrincipal);
         
-        if (!Guid.TryParse(userGuidString, out var userGuid))
+        if (user is null || !Guid.TryParse(user.Id, out var userGuid))
         {
             throw new UnauthorizedAccessException();
         }
@@ -42,32 +38,39 @@ public class IdentityService: IIdentityService
         return userGuid;
     }
 
-    public async Task<string> GetUserName()
+    public async Task<string> GetUserNameAsync()
     {
-        var userName = await userManager.GetUserNameAsync(user);
+        var user =  await userManager.GetUserAsync(claimsPrincipal);
         
-        if (userName is null)
+        if (user?.UserName is null)
         {
             throw new UnauthorizedAccessException();
         }
             
-        return userName;
+        return user.UserName;
     }
 
-    private async Task<string> GetUserEmail()
+    private async Task<string> GetUserEmailAsync()
     {
-        var email = await userManager.GetEmailAsync(user);
+        var user =  await userManager.GetUserAsync(claimsPrincipal);
         
-        if (email is null)
+        if (user?.Email is null)
         {
             throw new UnauthorizedAccessException();
         }
 
-        return email;
+        return user.Email;
     }
 
-    private async Task<List<string>> GetUserRoles()
+    private async Task<List<string>> GetUserRolesAsync()
     {
+        var user = await userManager.GetUserAsync(claimsPrincipal);
+        
+        if (user is null)
+        {
+            throw new UnauthorizedAccessException();
+        }
+        
         var roles = await userManager.GetRolesAsync(user);
         
         return roles.ToList();

@@ -8,8 +8,8 @@ public class AuthInfo
     public Guid UserGuid { get; set; }
         
     [JsonProperty("email")]
-    public string Email { get; set; }
-    
-    [JsonProperty("roles")]
-    public IEnumerable<string> Roles { get; set; }
+    public string? Email { get; set; }
+
+    [JsonProperty("roles")] 
+    public IEnumerable<string> Roles { get; set; } = new List<string>();
 }

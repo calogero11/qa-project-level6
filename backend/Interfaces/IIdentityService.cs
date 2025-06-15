@@ -6,7 +6,7 @@ public interface IIdentityService
 {
     Task<AuthInfo> GetAuthInfoAsync();
     
-    Task<Guid> GetUserGuid();
+    Task<Guid> GetUserGuidAsync();
 
-    Task<string> GetUserName();
+    Task<string> GetUserNameAsync();
 }
