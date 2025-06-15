@@ -3,6 +3,7 @@ using webapi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using webapi.Data.Seeders;
 using webapi.Exceptions;
 using webapi.Extensions;
 
@@ -57,8 +58,14 @@ app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-    db.Database.Migrate();
+    var services = scope.ServiceProvider;
+    
+    var dbContext = services.GetRequiredService<DatabaseContext>();
+    await dbContext.Database.MigrateAsync();
+
+    await IdentitySeeder.SeedRolesAsync(services);
+    await IdentitySeeder.SeedUsersAsync(services);
+    await FeedSeeder.SeedFeedsAsync(dbContext);
 }
 
 app.UseAuthentication();
