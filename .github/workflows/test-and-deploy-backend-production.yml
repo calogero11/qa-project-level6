@@ -1,0 +1,31 @@
+name: Test and Deploy Backend Production
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'backend/**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+      - run: dotnet restore ./backend
+      - run: dotnet build ./backend --no-restore --configuration Release
+      - run: dotnet test ./backend --no-build --verbosity normal --configuration Release
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: success()
+
+    steps:
+      - name: Trigger Render deploy webhook
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL_BACKEND_PROD }}
+        run: curl -X POST $RENDER_DEPLOY_HOOK_URL_BACKEND_PROD
