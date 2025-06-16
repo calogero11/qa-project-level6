@@ -1,53 +1,25 @@
 import React, { useState } from "react";
-import {Link} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from 'framer-motion';
+import { register } from "../../services/authenticationService.js";
+import validatePassword from "../../utils/validatePassword.js";
+import validateEmail from "../../utils/validateEmail.js";
 
 function Register() {
+    const navigate = useNavigate();
     const [emailError, setEmailError] = useState(null);
     const [passwordError, setPasswordError] = useState(null);
     
-    function validatePassword(event) {
+    function handlePasswordValidation(event) {
         const value = event.target.value;
-        const atLeast6Charaters = /^.{6,}$/;
-        const atLeast1NonAlphanumericCharater = /[^a-zA-Z0-9]/;
-        const atLeast1Digit = /^(?=.*\d).+$/;
-        const atLeast1LowercaseCharater = /^(?=.*[a-z]).+$/;
-        const atLeast1UppercaseCharater = /^(?=.*[A-Z]).+$/;
-        const atLeast1UniqueCharater = /^(?=.*[A-Z]).+$/;
-        
-        if (!atLeast6Charaters.test(value)) {
-            setPasswordError('Password must be at least 6 characters.')
-        }
-        else if (!atLeast1NonAlphanumericCharater.test(value)) {
-            setPasswordError('Passwords must have at least one non alphanumeric character.')
-        }
-        else if (!atLeast1Digit.test(value)) {
-            setPasswordError('Password must have at least one digit (\'0\'-\'9\').')
-        }
-        else if (!atLeast1LowercaseCharater.test(value)) {
-            setPasswordError('Password must have at least one lowercase (\'a\'-\'z\').')
-        }
-        else if (!atLeast1UppercaseCharater.test(value)) {
-            setPasswordError('Password must have at least one uppercase (A-Z).')
-        }
-        else if (!atLeast1UniqueCharater.test(value)) {
-            setPasswordError('Password must use at least 1 different character.')
-        }
-        else {
-            setPasswordError('')
-        }
+        const error = validatePassword(value)
+        setPasswordError(error)
     }
     
-    function validateEmail(event) {
+    function handleEmailValidation(event) {
         const value = event.target.value;
-        const validEmailPattern = /\S+@\S+\.\S+/;
-        
-        if (!validEmailPattern.test(value)) {
-            setEmailError('Invalid Email Address');
-        }
-        else {
-            setEmailError('');
-        }
+        const error = validateEmail(value)
+        setEmailError(error)
     }
     
     const handleRegistration = async (event) => {
@@ -57,19 +29,8 @@ function Register() {
         let password = event.target.password.value;
 
         try {
-            const response = await fetch(`${__API_URL__}/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password })
-            });
-
-            if (!response.ok) {
-                throw new Error('Incorrect username or password.')
-            }
-
-            window.location.replace('http://localhost:5173/login');
+            await register(email, password)
+            navigate('/login')
         }
         catch (error) {
             console.log('error')
@@ -121,7 +82,7 @@ function Register() {
                                                         ? 'border-danger' : ''
                                             }
                                         `}
-                                            onChange={validateEmail}
+                                            onChange={handleEmailValidation}
                                             placeholder="Enter email"/>
                                         {emailError &&
                                             <p className="description text-danger mt-2">&#x2716; {emailError}</p>}
@@ -147,7 +108,7 @@ function Register() {
                                             }
                                         `}
                                             id="password"
-                                            onChange={validatePassword}
+                                            onChange={handlePasswordValidation}
                                             placeholder="Password"/>
                                         {passwordError &&
                                             <p className="description text-danger mt-2">&#x2716; {passwordError}</p>}

@@ -4,7 +4,6 @@ function Toast({message, show, onClose, delay = 3000, isError}) {
 
     useEffect(() => {
         if (show) {
-            console.log("toast visible")
             const timer = setTimeout(onClose, delay);
             return () => clearTimeout(timer);
         }

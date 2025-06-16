@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from 'framer-motion';
+import { login } from "../../services/authenticationService.js";
+import { setAuthToken } from "../../utils/authToken.js";
 
 function Login() {
     const navigate = useNavigate();
@@ -9,36 +11,16 @@ function Login() {
     const handleLogin = async (event) => {
         event.preventDefault();
         
-        let email = event.target.email.value;
-        let password = event.target.password.value;
+        const email = event.target.email.value;
+        const password = event.target.password.value;
         
         try {
-            const response = await fetch(`${__API_URL__}/auth/login`, { 
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password })
-            });
-            
-            if (response.status === 401) {
-                setError('Incorrect username or password.');
-                return
-            }
-            
-            const data = await response.json();
-            
-            sessionStorage.setItem('token', data.accessToken);
-            
-            const goToIndex = () => {
-                let username = email
-                navigate('/');    
-            };
-
-            goToIndex();
+            const data = await login(email, password);
+            setAuthToken(data.accessToken)
+            navigate('/')
         }
         catch (error) {
-            setError('An error has occured.')
+            setError('Invalid username or password.');
         }
     }
     

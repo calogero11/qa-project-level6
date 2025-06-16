@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Toast from "./Toast.jsx";
-import {title} from "framer-motion/m";
+import formatTimeAgo from "../utils/formatTimeAgo.js"
+import { getAuthRoles } from "../utils/authRoles.js";
+import { deleteFeed, updateFeed } from "../services/feedService.js";
 
 function FeedCards({feeds, updateFeeds}) {
     const [userGuid] = useState(sessionStorage.getItem("userGuid"));
@@ -9,36 +11,22 @@ function FeedCards({feeds, updateFeeds}) {
     const [toasterDetails, setToasterDetails] = useState({ isError: false, statusMessage: '', showToast: false});
 
     useEffect(() => {
-        let roles = sessionStorage.getItem("roles")
-        if (roles === null || roles === undefined) {
-            return
-        }
-
+        let roles = getAuthRoles();
+        
         if(roles.includes(",")) {
             setUserRoles(roles.split(","))
         }
 
-        return setUserRoles(roles);
+        return setUserRoles([roles]);
     }, []);
     
     const handleEdit = async () => {
         try {
-            let token = sessionStorage.getItem("token");
-            let id = editDetails.id;
-            let title = editDetails.title;
-            let content = editDetails.content;
-            
-            const response = await fetch(`${__API_URL__}/feed/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify({ title, content })
-            });
+            const id = editDetails.id;
+            const title = editDetails.title;
+            const content = editDetails.content;
 
-            if (!response.ok) throw new Error('Failed to update post');
-
+            await updateFeed(id, title, content)
             setToasterDetails({isError: false, statusMessage: 'Your post has been updated successfully', showToast: true})
             updateFeeds()
             setEditDetails({id: null, title: null, content: null})
@@ -49,41 +37,12 @@ function FeedCards({feeds, updateFeeds}) {
     
     const handleDelete = async (id) => {
         try {
-            let token = sessionStorage.getItem("token");
-            
-            const response = await fetch(`${__API_URL__}/feed/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    "Authorization": `Bearer ${token}`,
-                }
-            });
-
-            if (!response.ok) throw new Error('Failed to delete');
-
+            await deleteFeed(id)
             setToasterDetails({isError: false, statusMessage: 'Your post has been deleted successfully', showToast: true})
             updateFeeds()
         } catch (error) {
             setToasterDetails({isError: true, statusMessage: error.message, showToast: true})
         }
-    }
-    
-    const getTimePassed = (date) => {
-        const now = new Date();
-        const past = new Date(date);
-        const seconds = Math.floor((now - past) / 1000);
-
-        if (seconds < 60) return `less than a minute ago`;
-        const minutes = Math.floor(seconds / 60);
-        if (minutes < 60) return `${minutes} minutes ago`;
-        const hours = Math.floor(minutes / 60);
-        if (hours < 24) return `${hours} hours ago`;
-        const days = Math.floor(hours / 24);
-        if (days < 30) return `${days} days ago`;
-        const months = Math.floor(days / 30);
-        if (months < 12) return `${months} months ago`;
-        const years = Math.floor(months / 12);
-        return `${years} years ago`;
     }
     
     return (
@@ -121,8 +80,8 @@ function FeedCards({feeds, updateFeeds}) {
                                 <small className="text-muted d-block">{feed.userName}</small>
                                 {
                                     feed.lastUpdatedDate != null ?
-                                        <small className="text-muted me-2">Updated: {getTimePassed(feed.lastUpdatedDate)}</small> :
-                                        <small className="text-muted me-2">{getTimePassed(feed.uploadedDate)}</small>
+                                        <small className="text-muted me-2">Updated: {formatTimeAgo(feed.lastUpdatedDate)}</small> :
+                                        <small className="text-muted me-2">{formatTimeAgo(feed.uploadedDate)}</small>
                                 }
                             </div>
 

@@ -38,7 +38,7 @@ public class FeedService: IFeedService
 
     public async Task<IEnumerable<Feed>> GetAllFeedsAsync()
     {
-        return await databaseContext.Feeds.ToListAsync();
+        return await databaseContext.Feeds.OrderBy(feed => feed.UploadedDate).ToListAsync();
     }
 
     public async Task<Feed?> GetFeedByIdAsync(int id)

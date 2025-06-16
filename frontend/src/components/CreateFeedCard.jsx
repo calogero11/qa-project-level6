@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Toast from "./Toast.jsx"
+import { createFeed } from "../services/feedService.js";
 
 function CreateFeedCard({onCreated}) {
     const [rows, setRows] = useState(1);
@@ -10,22 +11,9 @@ function CreateFeedCard({onCreated}) {
 
         let title = event.target.feedTitle.value;
         let content = event.target.feedContent.value;
-        const token = sessionStorage.getItem("token");
-        
+
         try {
-            const response = await fetch(`${__API_URL__}/feed`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify({ title, content })
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to create post.');
-            }
-
+            await createFeed(title, content)
             setToasterDetails({isError: false, statusMessage: 'Your post has been uploaded successfully', showToast: true})
             event.target.feedContent.value = ''
             setRows(1)
@@ -39,12 +27,9 @@ function CreateFeedCard({onCreated}) {
     const handleChange = (event) => {
         const value = event.target.value;
         
-        if (value.length > 0) {
-            setRows(4)
-        }
-        else {
-            setRows(1)
-        }
+        value.length > 0 
+            ? setRows(4)
+            : setRows(1)
     }
     
     return (
@@ -62,7 +47,7 @@ function CreateFeedCard({onCreated}) {
 
                     <div className="border-1 rounded border mb-3">
                         {
-                            rows == 4 &&
+                            rows === 4 &&
                             (
                                 <input
                                     className="form-control mb-2 border-0"
