@@ -46,36 +46,34 @@ public class FeedService: IFeedService
         return await databaseContext.Feeds.FindAsync(id);
     }
 
-    public async Task<bool> UpdateFeedAsync(int id, string content, string? title)
+    public async Task<bool> TryUpdateFeedAsync(Feed feed, string content, string? title)
     {
-        var feed = await GetFeedByIdAsync(id);
-
-        if (feed is null)
+        try
+        {
+            feed.Title = title;
+            feed.Content = content;
+            feed.LastUpdatedDate = DateTime.Now;
+            await databaseContext.SaveChangesAsync();
+            
+            return true;
+        }
+        catch (Exception _)
         {
             return false;
         }
-        
-        feed.Title = title;
-        feed.Content = content;
-        feed.LastUpdatedDate = DateTime.Now;
-        
-        await databaseContext.SaveChangesAsync();
-
-        return true;
     }
 
-    public async Task<bool> DeleteFeedAsync(int id)
+    public async Task<bool> TryDeleteFeedAsync(Feed feed)
     {
-        var feed = await GetFeedByIdAsync(id);
-
-        if (feed is null)
+        try
+        {
+            databaseContext.Feeds.Remove(feed);
+            await databaseContext.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception _)
         {
             return false;
         }
-
-        databaseContext.Feeds.Remove(feed);
-        await databaseContext.SaveChangesAsync();
-
-        return true;
     }
 }

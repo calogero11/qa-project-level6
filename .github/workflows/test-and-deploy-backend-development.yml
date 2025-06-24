@@ -6,6 +6,7 @@ on:
       - development
     paths:
       - 'backend/**'
+  workflow_dispatch:
 
 jobs:
   build-and-test:
@@ -28,4 +29,4 @@ jobs:
       - name: Trigger Render deploy webhook
         env:
           RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL_BACKEND_DEV }}
-        run: curl -X POST $RENDER_DEPLOY_HOOK_URL_BACKEND_DEV
+        run: curl -X POST $RENDER_DEPLOY_HOOK_URL

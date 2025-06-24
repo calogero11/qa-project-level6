@@ -9,4 +9,7 @@ public interface IIdentityService
     Task<Guid> GetUserGuidAsync();
 
     Task<string> GetUserNameAsync();
+
+    Task<List<string>> GetUserRolesAsync();
+
 }
