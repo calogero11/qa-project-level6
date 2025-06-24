@@ -8,7 +8,7 @@ public static class WebApplicationExtensions
         {
             if (context.Request.Path.Equals("/login", StringComparison.OrdinalIgnoreCase))
             {
-                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                context.Response.StatusCode = StatusCodes.Status410Gone;
                 await context.Response.WriteAsync("Endpoint disabled");
                 return;
             }

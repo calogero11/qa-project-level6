@@ -62,7 +62,7 @@ public class IdentityService: IIdentityService
         return user.Email;
     }
 
-    private async Task<List<string>> GetUserRolesAsync()
+    public async Task<List<string>> GetUserRolesAsync()
     {
         var user = await userManager.GetUserAsync(claimsPrincipal);
         

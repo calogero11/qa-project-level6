@@ -99,16 +99,17 @@ public class FeedServiceTests
     
     #endregion
     
-    #region DeleteFeedAsync
+    #region TryDeleteFeedAsync
     
     [Test]
-    public async Task GivenDBHasSelectFeed_WhenDeleteFeedAsync_ThenRemoveFeed()
+    public async Task GivenDBHasSelectFeed_WhenTryDeleteFeedAsync_ThenRemoveFeed()
     {
         // Arrange
         SeedFakeFeedData();
+        var selectedFeed = databaseContext.Feeds.Single(feed => feed.Id == 1);
         
         // Act
-        var result = await sut.DeleteFeedAsync(1);
+        var result = await sut.TryDeleteFeedAsync(selectedFeed);
         
         // Assert
         Assert.Multiple(() =>
@@ -120,13 +121,14 @@ public class FeedServiceTests
     }
     
     [Test]
-    public async Task GivenDBDoesNotHaveSelectFeed_WhenDeleteFeedAsync_ThenDoNotRemoveFeed()
+    public async Task GivenDBDoesNotHaveSelectFeed_WhenTryDeleteFeedAsync_ThenDoNotRemoveFeed()
     {
         // Arrange
         SeedFakeFeedData();
+        var selectedFeed = databaseContext.Feeds.FirstOrDefault(feed => feed.Id == 4);
         
         // Act
-        var result = await sut.DeleteFeedAsync(4);
+        var result = await sut.TryDeleteFeedAsync(selectedFeed!);
         
         // Assert
         Assert.Multiple(() =>
@@ -139,16 +141,17 @@ public class FeedServiceTests
 
     #endregion
     
-    #region UpdateFeedAsync
+    #region TryUpdateFeedAsync
     
     [Test]
-    public async Task GivenDBHasSelectFeed_WhenUpdateFeedAsync_ThenUpdateFeed()
+    public async Task GivenDBHasSelectFeed_WhenTryUpdateFeedAsync_ThenUpdateFeed()
     {
         // Arrange
         SeedFakeFeedData();
+        var selectedFeed = databaseContext.Feeds.Single(feed => feed.Id == 1);
         
         // Act
-        var result = await sut.UpdateFeedAsync(1, "UpdatedContent", "UpdatedTitle");
+        var result = await sut.TryUpdateFeedAsync(selectedFeed, "UpdatedContent", "UpdatedTitle");
         
         // Assert
         Assert.Multiple(() =>
@@ -164,13 +167,14 @@ public class FeedServiceTests
     }
     
     [Test]
-    public async Task GivenDBDoesNotHaveSelectFeed_WhenUpdateFeedAsync_ThenDoNotUpdateFeed()
+    public async Task GivenDBDoesNotHaveSelectFeed_WhenTryUpdateFeedAsync_ThenDoNotUpdateFeed()
     {
         // Arrange
         SeedFakeFeedData();
+        var selectedFeed = databaseContext.Feeds.FirstOrDefault(feed => feed.Id == 4);
         
         // Act
-        var result = await sut.UpdateFeedAsync(4, "UpdatedContent", "UpdatedTitle");
+        var result = await sut.TryUpdateFeedAsync(selectedFeed!, "UpdatedContent", "UpdatedTitle");
         
         // Assert
         Assert.Multiple( () =>

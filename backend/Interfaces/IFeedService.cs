@@ -10,7 +10,7 @@ public interface IFeedService
 
     Task<Feed?> GetFeedByIdAsync(int id);
     
-    Task<bool> UpdateFeedAsync(int id, string content, string? title);
+    Task<bool> TryUpdateFeedAsync(Feed feed, string content, string? title);
 
-    Task<bool> DeleteFeedAsync(int id);
+    Task<bool> TryDeleteFeedAsync(Feed feed);
 }

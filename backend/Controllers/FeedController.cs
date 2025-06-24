@@ -9,10 +9,12 @@ namespace webapi.Controllers;
 public class FeedController: ControllerBase
 {
     private readonly IFeedService feedService;
+    private readonly IIdentityService identityService;
     
-    public FeedController(IFeedService feedService)
+    public FeedController(IFeedService feedService, IIdentityService identityService)
     {
         this.feedService = feedService;
+        this.identityService = identityService;
     }
     
     [Authorize, HttpPost]
@@ -28,7 +30,7 @@ public class FeedController: ControllerBase
         return CreatedAtAction(nameof(Get), new { id = feedRequest.Content }, null);
     }
     
-    [Authorize, HttpGet, Route("{id}")]
+    [Authorize, HttpGet, Route("{id:int}")]
     public async Task<IActionResult> Get(int id)
     {
         var feed = await feedService.GetFeedByIdAsync(id);
@@ -48,15 +50,28 @@ public class FeedController: ControllerBase
         return Ok(posts.ToArray());
     }
     
-    [Authorize, HttpPut, Route("{id}")]
+    [Authorize, HttpPut, Route("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] FeedRequest feedRequest)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
+
+        var feed = await feedService.GetFeedByIdAsync(id);
+
+        if (feed is null)
+        {
+            return NotFound();
+        }
         
-        var updated = await feedService.UpdateFeedAsync(id, feedRequest.Content!, feedRequest.Title);
+        if (feed.UserGuid != await identityService.GetUserGuidAsync() || 
+            !(await identityService.GetUserRolesAsync()).Contains("Admin"))
+        {
+            return StatusCode(403, "The request is Forbidden");
+        }
+        
+        var updated = await feedService.TryUpdateFeedAsync(feed, feedRequest.Content!, feedRequest.Title);
         if (!updated)
         {
             return NotFound();
@@ -65,15 +80,24 @@ public class FeedController: ControllerBase
         return NoContent();
     }
     
-    [Authorize, HttpDelete, Route("{id}")]
+    [Authorize, HttpDelete, Route("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var deleted = await feedService.DeleteFeedAsync(id);
-        if (!deleted)
+        var feed = await feedService.GetFeedByIdAsync(id);
+
+        if (feed is null)
         {
             return NotFound();
         }
-
-        return NoContent();
+            
+        if (feed.UserGuid != await identityService.GetUserGuidAsync() ||
+            !(await identityService.GetUserRolesAsync()).Contains("Admin"))
+        {
+            return StatusCode(403, "The request is Forbidden");
+        }
+        
+        return await feedService.TryDeleteFeedAsync(feed) ?
+            NoContent() :
+            BadRequest();
     }
 }
