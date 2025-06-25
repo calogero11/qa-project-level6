@@ -23,3 +23,8 @@ VITE_API_URL=https://localhost:44324
 ```
 npm run dev
 ```
+
+## Run Tests
+```
+npm test
+```
