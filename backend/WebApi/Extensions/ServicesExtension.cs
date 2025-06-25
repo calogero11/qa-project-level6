@@ -1,4 +1,5 @@
 using System.Net;
+using System.Reflection;
 using System.Threading.RateLimiting;
 using Microsoft.OpenApi.Models;
 using WebApi.Services;
@@ -19,6 +20,10 @@ public static class ServicesExtension
     {
         services.AddSwaggerGen(options =>
         {
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            options.IncludeXmlComments(xmlPath);
+            
             options.SwaggerDoc("v1", new OpenApiInfo
             {
                 Version = "v1",

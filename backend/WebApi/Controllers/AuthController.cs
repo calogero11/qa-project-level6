@@ -28,6 +28,13 @@ public class AuthController: ControllerBase
         this.signInManager = signInManager;
     }
     
+    /// <summary>
+    /// Retrieves authentication information for the current user
+    /// </summary>
+    /// <remarks> Requires authorization </remarks>
+    /// <returns>Returns the authentication details</returns>
+    /// <response code="200">Authentication info retrieved successfully</response>
+    /// <response code="401">Unauthorized access</response>
     [Authorize, HttpGet, Route("check")]
     public async Task<IActionResult> Get()
     {
@@ -36,6 +43,13 @@ public class AuthController: ControllerBase
         return Ok(authInfo);
     }
     
+    /// <summary>
+    /// Authenticates a user and returns a JWT access token
+    /// </summary>
+    /// <param name="loginRequest">The user login credentials (email and password)</param>
+    /// <returns>Returns an access token if authentication succeeds</returns>
+    /// <response code="200">Authentication successful. Returns JWT token</response>
+    /// <response code="401">Authentication failed. Invalid email or password</response>
     [HttpPost, Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
     {
