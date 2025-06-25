@@ -1,6 +1,8 @@
-# webapi
+# QA Project Level6
 
-## Infrasture
+This application is a full-stack team collaboration tool built with .NET 8 (backend) and React.js (frontend).
+
+## ⛩️ Architecture
 ```
 .github
     /workflow 				// GitHub Action Workflows
@@ -26,3 +28,9 @@ frontend/
         /utils/				// Utility/helper functions and common logic
 tests/					// Unit tests
 ```
+
+## 🚀 Quick Start
+
+See individual setup guides
+- [Backend README](./backend/README.md)
+- [Frontend README](./frontend/README.md)
