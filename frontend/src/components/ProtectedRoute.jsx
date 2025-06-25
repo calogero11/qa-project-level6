@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Navigate, useNavigate} from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 function ProtectedRoute({ children }) {
   const [authState, setAuthState] = useState(null);

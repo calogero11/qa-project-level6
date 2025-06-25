@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Optional, if using React Router
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
     const navigate = useNavigate();
