@@ -20,7 +20,7 @@ backend/
             /Responses/         // Models representing outgoing API response payloads
         /Properties/            // Assembly or project metadata (e.g., launchSettings.json)
         /Services/              // Business logic and service classes handling core operations
-    /WebApi.Tests/              // Unit tests
+    /WebApi.Tests/              // Backend Unit tests with NUnit
 frontend/
     /src/
         /components/            // Reusable UI components
@@ -28,6 +28,7 @@ frontend/
         /routes/                // Route configuration and navigation logic
         /services/              // API service calls and data fetching logic
         /utils/                 // Utility/helper functions and common logic
+    /tests/                     // Frontend unit tests with jest
 ```
 
 ## 🚀 Quick Start
