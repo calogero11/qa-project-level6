@@ -7,6 +7,11 @@ export default ({ mode }) => {
 
   return defineConfig({
     plugins: [react()],
+    test: {
+      environment: 'jsdom',
+      globals: true,
+      setupFiles: './tests/setupTests.js'
+    },
     define: {
       __API_URL__: JSON.stringify(env.VITE_API_URL),
     },
