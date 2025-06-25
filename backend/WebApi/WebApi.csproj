@@ -24,9 +24,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="webapi.UnitTests\obj\project.assets.json" />
-      <_ContentIncludedByDefault Remove="webapi.UnitTests\obj\project.packagespec.json" />
-      <_ContentIncludedByDefault Remove="webapi.UnitTests\obj\webapi.UnitTests.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="WebApi.Tests\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="WebApi.Tests\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="WebApi.Tests\obj\WebApi.Tests.csproj.nuget.dgspec.json" />
     </ItemGroup>
 
 </Project>
