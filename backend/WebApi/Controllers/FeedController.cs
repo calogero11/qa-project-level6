@@ -25,9 +25,9 @@ public class FeedController: ControllerBase
             return BadRequest(ModelState);
         }
         
-        await feedService.CreateFeedAsync(feedRequest.Content!, feedRequest.Title);
+        var feed = await feedService.CreateFeedAsync(feedRequest.Content!, feedRequest.Title);
         
-        return CreatedAtAction(nameof(Get), new { id = feedRequest.Content }, null);
+        return CreatedAtAction(nameof(Get), new { id = feed.Id }, null);
     }
     
     [Authorize, HttpGet, Route("{id:int}")]
