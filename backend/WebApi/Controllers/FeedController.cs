@@ -102,7 +102,7 @@ public class FeedController: ControllerBase
             return NotFound();
         }
         
-        if (feed.UserGuid != await identityService.GetUserGuidAsync() || 
+        if (feed.UserGuid != await identityService.GetUserGuidAsync() && 
             !(await identityService.GetUserRolesAsync()).Contains("Admin"))
         {
             return StatusCode(403, "The request is Forbidden");
@@ -138,7 +138,7 @@ public class FeedController: ControllerBase
             return NotFound();
         }
             
-        if (feed.UserGuid != await identityService.GetUserGuidAsync() ||
+        if (feed.UserGuid != await identityService.GetUserGuidAsync() &&
             !(await identityService.GetUserRolesAsync()).Contains("Admin"))
         {
             return StatusCode(403, "The request is Forbidden");
