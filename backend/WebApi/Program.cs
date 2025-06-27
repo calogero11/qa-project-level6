@@ -45,7 +45,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapIdentityApi<IdentityUser>();
 app.DisableIdentityLoginEndpoint();
-app.MapControllers().RequireRateLimiting("ApiRateLimiter");;
+app.MapControllers().RequireRateLimiting("ApiRateLimiter");
 
 using (var scope = app.Services.CreateScope())
 {
