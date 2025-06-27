@@ -26,7 +26,7 @@ public class FeedService: IFeedService
             Content = content,
             UserGuid = await identityService.GetUserGuidAsync(),
             UserName = await identityService.GetUserNameAsync(),
-            UploadedDate = DateTime.Now,
+            UploadedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Europe/London")),
             LastUpdatedDate = null
         };
             
@@ -52,7 +52,7 @@ public class FeedService: IFeedService
         {
             feed.Title = title;
             feed.Content = content;
-            feed.LastUpdatedDate = DateTime.Now;
+            feed.LastUpdatedDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Europe/London"));
             await databaseContext.SaveChangesAsync();
             
             return true;
